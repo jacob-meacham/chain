@@ -1,0 +1,49 @@
+{
+  "parser"  : "babel-eslint",
+  "extends" : "airbnb",
+  "plugins": ["react"],
+  "env"     : {
+    "browser" : true,
+    "mocha": true
+  },
+
+  "globals" : {
+    "__DEV__" : false,
+    "__PROD__" : false,
+    "__DEBUG__" : false,
+    "__COVERAGE__" : false,
+    "__BASENAME__" : false,
+  },
+
+  "rules": {
+    "semi" : [2, "never"],
+    "jsx-quotes": [2, "prefer-single"],
+    "no-unused-vars": [2, {"varsIgnorePattern": "_", "argsIgnorePattern": "_"}],
+    "arrow-spacing": 2,
+    "constructor-super": 2,
+    "generator-star-spacing": 2,
+    "no-class-assign": 2,
+    "no-const-assign": 2,
+    "no-dupe-class-members": 2,
+    "no-var": 2,
+    "object-shorthand": 2,
+    "prefer-arrow-callback": 1,
+    "prefer-const": 2,
+    "prefer-spread": 2,
+    "space-before-function-paren": [2, "never"],
+    "consistent-return": 2,
+    "default-case": 2,
+    "dot-notation": 2,
+    "no-invalid-this": 2,
+    "no-undefined": 2,
+    "camelcase": 2,
+    "no-lonely-if": 2,
+    "keyword-spacing": 2,
+    "arrow-body-style": 0,
+    "no-multi-str": 0,
+    "no-console": 0,
+    "spaced-comment": 0,
+    "comma-dangle": ["error", "only-multiline"],
+    "global-require": 0
+  }
+}
