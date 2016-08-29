@@ -1,17 +1,43 @@
 import React, { PropTypes } from 'react'
 import CalendarHeatmap from './CalendarHeatmap'
+import _ from 'lodash/groupBy'
+import moment from 'moment'
 
-const Chain = ({ title, domain, subDomain }) => (
-  <div className='chain'>
+
+import './chain.scss'
+
+export const WEEKLY = 'weekly'
+export const DAILY = 'daily'
+
+function findCurrentStreak(data, frequency) {
+  // Bucket data by frequency
+
+}
+
+const Chain = ({ title, frequency, data, heatmap = {} }) => {
+  let domain = null
+  switch (frequency) {
+    case WEEKLY:
+      domain = { domain: 'month', subDomain: 'week' }
+      break
+    case DAILY:
+      domain = { domain: 'month', subDomain: 'day' }
+      break
+    default:
+      domain = { domain: 'year', subDomain: 'day' }
+  }
+
+  return (<div className='chain'>
     <div className='title'>{title}</div>
-    <CalendarHeatmap domain={domain} subDomain={subDomain} />
-  </div>
-)
+    <CalendarHeatmap heatmap={{ ...heatmap, ...domain, data }} />
+  </div>)
+}
 
 Chain.propTypes = {
   title: PropTypes.string.isRequired,
-  domain: PropTypes.string,
-  subDomain: PropTypes.string
+  frequency: PropTypes.string.isRequired,
+  heatmap: PropTypes.object,
+  data: PropTypes.object.isRequired
 }
 
 export default Chain

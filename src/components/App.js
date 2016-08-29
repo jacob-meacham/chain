@@ -1,11 +1,11 @@
 import React from 'react'
-import Chain from './Chain'
+import ChainList from './ChainList'
+import chains from '../../data/chains'
 
-const App = () => (
-  <div>
-    <Chain title='Get Up Early' domain='month' subDomain='day' />
-    <Chain title='Pilates' domain='month' subDomain='week' />
-  </div>
-)
+const App = () => {
+  return (<div>
+    <ChainList chains={chains} />
+  </div>)
+}
 
 export default App

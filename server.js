@@ -14,7 +14,7 @@ if (ENV === 'development') {
   const config = require('./config/webpack.config')
 
   new WebpackDevServer(webpack(config), {
-    publicPath: config.output.publicPath,
+    publicPath: 'app',
     hot: true,
     progress: true,
     historyApiFallback: true
