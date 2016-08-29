@@ -15,9 +15,11 @@
   "repository": "https://github.com/jacob-meacham/chain",
   "devDependencies": {
     "babel-core": "6.13.2",
+    "babel-eslint": "6.1.2",
     "babel-loader": "6.2.4",
     "babel-preset-es2015": "6.9.0",
     "babel-preset-react": "6.11.1",
+    "babel-preset-stage-0": "6.5.0",
     "css-loader": "0.23.1",
     "debug": "2.2.0",
     "dependency-check": "2.6.0",
@@ -46,6 +48,7 @@
   "dependencies": {
     "cal-heatmap": "3.6.0",
     "d3": "3.5.17",
+    "expand-home-dir": "0.0.3",
     "font-awesome": "4.6.3",
     "lodash": "4.14.0",
     "moment": "2.14.1",

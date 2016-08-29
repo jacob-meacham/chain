@@ -1,18 +1,12 @@
 import React, { PropTypes } from 'react'
 import CalendarHeatmap from './CalendarHeatmap'
-import _ from 'lodash/groupBy'
-import moment from 'moment'
-
+//import _ from 'lodash/groupBy'
+//import moment from 'moment'
 
 import './chain.scss'
 
 export const WEEKLY = 'weekly'
 export const DAILY = 'daily'
-
-function findCurrentStreak(data, frequency) {
-  // Bucket data by frequency
-
-}
 
 const Chain = ({ title, frequency, data, heatmap = {} }) => {
   let domain = null
