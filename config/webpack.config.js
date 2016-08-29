@@ -46,7 +46,7 @@ if (DEV) {
 
 if (DEV) {
   console.log('Adding HMR and dev server support')
-  webpackConfig.entry.app.unshift('webpack/hot/only-dev-server')
+  webpackConfig.entry.app.unshift('webpack/hot/dev-server')
   webpackConfig.entry.app.unshift('webpack-dev-server/client?http://0.0.0.0:9292')
   webpackConfig.entry.app.unshift('react-hot-loader/patch')
 }

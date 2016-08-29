@@ -1,8 +1,8 @@
 import React from 'react'
 import ChainList from './ChainList'
-import expandHomeDir from 'expand-home-dir'
 
-const chains = require(expandHomeDir('~/.chain/chains.json'))
+// TODO: Obviously fix this
+const chains = require('json!/Users/jmeacham/.chain/chains.json')
 
 const App = () => {
   return (<div>
