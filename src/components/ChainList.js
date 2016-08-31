@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react'
 import Chain from './Chain'
+import shuffle from 'lodash/shuffle'
 
 const ChainList = ({ chains }) => (
   <div className='chains'>
-    {chains.map(chain =>
+    {shuffle(chains).map(chain =>
       <Chain
         key={chain.id}
         {...chain}
