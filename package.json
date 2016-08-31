@@ -43,10 +43,12 @@
     "rimraf": "2.5.4",
     "sass-loader": "4.0.0",
     "style-loader": "0.13.1",
+    "url-loader": "0.5.7",
     "webpack": "1.13.1",
     "webpack-dev-server": "1.14.1"
   },
   "dependencies": {
+    "bootstrap": "3.3.7",
     "cal-heatmap": "3.6.0",
     "d3": "3.5.17",
     "expand-home-dir": "0.0.3",

@@ -1,0 +1,30 @@
+html {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: 'Nunito', sans-serif;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #f6f6f6;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.jumbotron {
+  text-align: center;
+}
+
+
+// Should probably just make this non-reactive, since this won't render well on mobile anyway.
+.container {
+  @media (min-width: 1200px) {
+    width: 1320px;
+  }
+}

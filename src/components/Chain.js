@@ -8,7 +8,7 @@ import './chain.scss'
 export const WEEKLY = 'weekly'
 export const DAILY = 'daily'
 
-const Chain = ({ name, frequency, links, heatmap = {} }) => {
+const Chain = ({ title, frequency, links, heatmap = {} }) => {
   let domain = null
   switch (frequency) {
     case WEEKLY:
@@ -21,14 +21,21 @@ const Chain = ({ name, frequency, links, heatmap = {} }) => {
       domain = { domain: 'year', subDomain: 'day' }
   }
 
-  return (<div className='chain'>
-    <div className='title'>{name}</div>
-    <CalendarHeatmap heatmap={{ ...heatmap, ...domain }} data={links} />
-  </div>)
+  return (
+    <div className='chain'>
+      <div className='panel panel-default'>
+        <div className='panel-heading'>
+          <h3 className='panel-title'>{title}</h3>
+        </div>
+        <div className='panel-body'>
+          <CalendarHeatmap heatmap={{ ...heatmap, ...domain }} data={links} />
+        </div>
+      </div>
+    </div>)
 }
 
 Chain.propTypes = {
-  name: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
   frequency: PropTypes.string.isRequired,
   heatmap: PropTypes.object,
   links: PropTypes.array.isRequired

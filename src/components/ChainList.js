@@ -5,7 +5,7 @@ const ChainList = ({ chains }) => (
   <div className='chains'>
     {chains.map(chain =>
       <Chain
-        key={chain.name}
+        key={chain.id}
         {...chain}
       />
     )}
@@ -14,7 +14,7 @@ const ChainList = ({ chains }) => (
 
 ChainList.propTypes = {
   chains: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
     frequency: PropTypes.string.isRequired,
     links: PropTypes.array.isRequired,
     heatmap: PropTypes.object }).isRequired).isRequired

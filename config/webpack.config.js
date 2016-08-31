@@ -102,6 +102,7 @@ webpackConfig.module.loaders = [
   { test: /\.(js|jsx)$/, exclude: /node_modules/, loaders: ['babel'] }, // JavaScript
   { test: /\.scss$/, loaders: ['style', 'css?sourceMap', 'sass?sourceMap'] }, // Sass
   { test: /\.css$/, loaders: ['style', 'css?sourceMap'] }, // CSS
+  { test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/, loader: 'url' },
   { test: /\.(png|jpg)$/, loader: 'file?name=images/[name].[ext]' }, // Images
 ]
 
