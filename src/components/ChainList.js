@@ -18,6 +18,8 @@ ChainList.propTypes = {
     title: PropTypes.string.isRequired,
     frequency: PropTypes.string.isRequired,
     links: PropTypes.array.isRequired,
+    required: PropTypes.number.isRequired,
+    creationTime: PropTypes.number.isRequired,
     heatmap: PropTypes.object }).isRequired).isRequired
 }
 

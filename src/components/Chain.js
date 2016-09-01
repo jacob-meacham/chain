@@ -2,61 +2,125 @@ import React, { PropTypes } from 'react'
 import CalendarHeatmap from './CalendarHeatmap'
 import groupBy from 'lodash/groupBy'
 import moment from 'moment'
+import reduce from 'lodash/reduce'
 
 import './chain.scss'
 
 export const WEEKLY = 'weekly'
 export const DAILY = 'daily'
 
-// TODO: Come up with a better algorithm here, if required
-function getStreakLength(links, frequency) {
-  let startOf = 'day'
+function getBucketStride(frequency) {
+  let bucketType = 'day'
+  let bucketWidth = 1
   if (frequency === WEEKLY) {
-    startOf = 'isoWeek'
+    bucketType = 'isoWeek'
+    bucketWidth = 7
   }
 
-  // Group by the set of contiguous buckets,
-  // then create an array of all dates, sorted by most recent.
-  const groupedResults = groupBy(links, (l) => moment.unix(l.timestamp).startOf(startOf).unix())
+  return { bucketType, bucketWidth }
+}
+
+// TODO: Clean this up!
+function getStreakLength({ groupedResults, bucketType, bucketWidth, numRequiredEvents }) {
+  // Create an array of all dates, sorted by most recent.
   const buckets = Object.keys(groupedResults).sort().reverse()
 
-  // Now, get the current day, and count backwards
-  const currentBucketTime = moment().startOf(startOf)
-  let streak = 0
-  for (let i = 0; i < buckets.length; i++) {
-    if (currentBucketTime.isSame(buckets[i])) {
-      break
+  const continuesStreak = (currentMoment, bucketTime) => {
+    if (!currentMoment.isSame(moment.unix(bucketTime))) {
+      return false
     }
 
-    streak += 1
-    if (frequency === DAILY) {
-      currentBucketTime.subtract(1, 'days')
-    } else {
-      currentBucketTime.subtract(7, 'days')
+    if (groupedResults[bucketTime].length < numRequiredEvents) {
+      // There is a bucket here, but not enough to keep the streak alive
+      return false
     }
+
+    return true
+  }
+
+  // Now, get the current day, and count backwards
+  const currentMoment = moment().startOf(bucketType)
+  let streak = 0
+  for (let i = 0; i < buckets.length;) {
+    if (!continuesStreak(currentMoment, buckets[i])) {
+      // If this is the first bucket we should be testing, then we'll allow it
+      if (!moment().startOf(bucketType).isSame(currentMoment)) {
+        break
+      }
+    } else {
+      streak += 1
+      // TODO: Especially this is nasty. We don't want to skip buckets
+      // on the first day. Change this to a while.
+      i++
+    }
+
+    currentMoment.subtract(bucketWidth, 'days')
   }
 
   return streak
 }
 
-const Chain = ({ title, frequency, links, heatmap = {} }) => {
-  const streakLength = getStreakLength(links, frequency)
+function calculateLinksInfo({ links, frequency, numRequiredEvents }) {
+  const { bucketType, bucketWidth } = getBucketStride(frequency)
+
+  // Group by the set of contiguous buckets
+  const groupedResults = groupBy(links, (l) => moment.unix(l.timestamp).startOf(bucketType).unix())
+
+  const currentStreakLength = getStreakLength({
+    groupedResults,
+    bucketType,
+    bucketWidth,
+    numRequiredEvents
+  })
+
+  const max = reduce(Object.keys(groupedResults),
+    (curMax, key) => (Math.max(curMax, groupedResults[key].length)), 0)
+
+  return { currentStreakLength, max }
+}
+
+function fillZeroes({ links, creationTime, frequency }) {
+  const { bucketType, bucketWidth } = getBucketStride(frequency)
+  const currentMoment = moment.unix(creationTime).startOf(bucketType)
+  const nowMoment = moment().startOf(bucketType)
+
+  const data = links.slice()
+
+  while (!currentMoment.isSame(nowMoment)) {
+    data.push({
+      number: 0,
+      timestamp: currentMoment.unix(),
+    })
+
+    currentMoment.add(bucketWidth, 'days')
+  }
+
+  return data
+}
+
+const Chain = ({ title, frequency, links, required, creationTime, heatmap = {} }) => {
+  const { currentStreakLength, max } =
+    calculateLinksInfo({ links, frequency, numRequiredEvents: required })
 
   let domain = null
   let streakType = null
   switch (frequency) {
     case WEEKLY:
       domain = { domain: 'month', subDomain: 'week' }
-      streakType = streakLength === 1 ? 'week' : 'weeks'
+      streakType = currentStreakLength === 1 ? 'week' : 'weeks'
       break
     case DAILY:
       domain = { domain: 'month', subDomain: 'day' }
-      streakType = streakLength === 1 ? 'day' : 'days'
+      streakType = currentStreakLength === 1 ? 'day' : 'days'
       break
     default:
       domain = { domain: 'year', subDomain: 'day' }
-      streakType = streakLength === 1 ? 'day' : 'days'
+      streakType = currentStreakLength === 1 ? 'day' : 'days'
   }
+
+  // Fill zeroes for all dates since we started
+  // TODO: Add this to cal-heatmap itself instead?
+  const heatmapData = fillZeroes({ links, creationTime, frequency })
 
   return (
     <div className='chain'>
@@ -65,9 +129,13 @@ const Chain = ({ title, frequency, links, heatmap = {} }) => {
           <h3 className='panel-title'>{title}</h3>
         </div>
         <div className='panel-body'>
-          <CalendarHeatmap heatmap={{ ...heatmap, ...domain }} data={links} />
+          <CalendarHeatmap
+            heatmap={{ ...heatmap, ...domain }}
+            data={heatmapData} max={max} numRequired={required}
+          />
           <div className='streak'>
-            Your current streak is {streakLength} {streakType} long. Don't break the chain!
+            Your current streak is {currentStreakLength} {streakType} long.
+            <span className='dbtc'> Don't break the chain!</span>
           </div>
         </div>
       </div>
@@ -78,6 +146,8 @@ Chain.propTypes = {
   title: PropTypes.string.isRequired,
   frequency: PropTypes.string.isRequired,
   heatmap: PropTypes.object,
+  creationTime: PropTypes.number.isRequired,
+  required: PropTypes.number.isRequired,
   links: PropTypes.array.isRequired
 }
 

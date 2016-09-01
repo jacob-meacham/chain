@@ -8,10 +8,10 @@ import 'cal-heatmap/cal-heatmap.css'
 const defaultProps = {
   cellSize: 15,
   cellPadding: 3,
+  cellRadius: 3,
   range: 13,
-  //considerMissingDataAsZero: true,
   tooltip: true,
-  displayLegend: false
+  displayLegend: false,
 }
 
 export default class CalendarHeatmap extends React.Component {
@@ -19,10 +19,19 @@ export default class CalendarHeatmap extends React.Component {
     const startDate = new Date()
     startDate.setFullYear(startDate.getFullYear() - 1)
 
+    // Set up the legend min and max
+    // TODO: tweak
+    const { numRequired, max = 0 } = this.props
+    const legend = [numRequired, numRequired * 2, numRequired * 3]
+    if (max > numRequired * 3) {
+      legend[3] = max
+    }
+
     const cal = new CalHeatMap()
     cal.init({
       ...defaultProps,
       ...this.props.heatmap,
+      legend,
       data: this.props.data,
       itemSelector: ReactDOM.findDOMNode(this),
       start: startDate,
@@ -41,4 +50,6 @@ export default class CalendarHeatmap extends React.Component {
 CalendarHeatmap.propTypes = {
   heatmap: PropTypes.object.isRequired,
   data: PropTypes.array.isRequired,
+  max: PropTypes.number,
+  numRequired: PropTypes.number.isRequired
 }
