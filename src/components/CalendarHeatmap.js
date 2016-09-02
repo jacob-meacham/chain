@@ -16,6 +16,17 @@ const defaultProps = {
 
 export default class CalendarHeatmap extends React.Component {
   componentDidMount() {
+    this.rebuildHeatmap()
+  }
+
+  componentDidUpdate() {
+    if (this.calHeatMap) {
+      this.calHeatMap.destroy()
+      this.rebuildHeatmap()
+    }
+  }
+
+  rebuildHeatmap() {
     const startDate = new Date()
     startDate.setFullYear(startDate.getFullYear() - 1)
 
@@ -27,8 +38,8 @@ export default class CalendarHeatmap extends React.Component {
       legend[3] = max
     }
 
-    const cal = new CalHeatMap()
-    cal.init({
+    this.calHeatMap = new CalHeatMap()
+    this.calHeatMap.init({
       ...defaultProps,
       ...this.props.heatmap,
       legend,
