@@ -12,6 +12,7 @@ const defaultProps = {
   range: 13,
   tooltip: true,
   displayLegend: false,
+  highlight: ['now'],
 }
 
 export default class CalendarHeatmap extends React.Component {
