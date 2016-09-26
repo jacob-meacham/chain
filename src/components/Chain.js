@@ -98,6 +98,20 @@ function fillZeroes({ links, creationTime, frequency, archiveMoment = moment() }
   return data
 }
 
+function getLegend({ required, max }) {
+  // TODO: tweak
+  // TODO: This should move up into Chain.
+  const legend = [required - 1, required, required * 2, required * 3]
+  if (max > required * 3) {
+    legend[4] = max
+  }
+
+  return {
+    legend
+  }
+}
+
+
 const Chain = ({ title,
   frequency, links, required, creationTime, archiveTime = null, heatmap = {} }) => {
   const { currentStreakLength, max } =
@@ -119,13 +133,16 @@ const Chain = ({ title,
       streakType = currentStreakLength === 1 ? 'day' : 'days'
   }
 
-  // Fill zeroes for all dates since we started
-  // TODO: Add this to cal-heatmap itself instead?
+  // Fill zeroes for all dates since we started, and before the archived date
   let archiveMoment = moment()
   if (archiveTime) {
     archiveMoment = moment.unix(archiveTime)
   }
+
+  // TODO: Add this to cal-heatmap itself instead?
   const heatmapData = fillZeroes({ links, creationTime, frequency, archiveMoment })
+
+  const legend = getLegend({ required, max })
 
   return (
     <div className='chain'>
@@ -135,8 +152,8 @@ const Chain = ({ title,
         </div>
         <div className='panel-body'>
           <CalendarHeatmap
-            heatmap={{ ...heatmap, ...domain }}
-            data={heatmapData} max={max} numRequired={required}
+            heatmap={{ ...heatmap, ...domain, ...legend }}
+            data={heatmapData}
           />
           <div className='streak'>
             Your current streak is {currentStreakLength} {streakType} long.

@@ -31,19 +31,10 @@ export default class CalendarHeatmap extends React.Component {
     const startDate = new Date()
     startDate.setFullYear(startDate.getFullYear() - 1)
 
-    // Set up the legend min and max
-    // TODO: tweak
-    const { numRequired, max = 0 } = this.props
-    const legend = [numRequired, numRequired * 2, numRequired * 3]
-    if (max > numRequired * 3) {
-      legend[3] = max
-    }
-
     this.calHeatMap = new CalHeatMap()
     this.calHeatMap.init({
       ...defaultProps,
       ...this.props.heatmap,
-      legend,
       data: this.props.data,
       itemSelector: ReactDOM.findDOMNode(this),
       start: startDate,
@@ -61,7 +52,5 @@ export default class CalendarHeatmap extends React.Component {
 
 CalendarHeatmap.propTypes = {
   heatmap: PropTypes.object.isRequired,
-  data: PropTypes.array.isRequired,
-  max: PropTypes.number,
-  numRequired: PropTypes.number.isRequired
+  data: PropTypes.array.isRequired
 }
