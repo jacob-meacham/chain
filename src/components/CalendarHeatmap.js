@@ -8,7 +8,7 @@ import 'cal-heatmap/cal-heatmap.css'
 const defaultProps = {
   cellSize: 15,
   cellPadding: 3,
-  cellRadius: 3,
+  //cellRadius: 10,
   range: 13,
   tooltip: true,
   displayLegend: false,

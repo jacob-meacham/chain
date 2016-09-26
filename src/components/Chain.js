@@ -79,14 +79,14 @@ function calculateLinksInfo({ links, frequency, numRequiredEvents }) {
   return { currentStreakLength, max }
 }
 
-function fillZeroes({ links, creationTime, frequency }) {
+function fillZeroes({ links, creationTime, frequency, archiveMoment = moment() }) {
   const { bucketType, bucketWidth } = getBucketStride(frequency)
   const currentMoment = moment.unix(creationTime).startOf(bucketType)
   const nowMoment = moment().startOf(bucketType)
 
   const data = links.slice()
 
-  while (!currentMoment.isSame(nowMoment)) {
+  while (!currentMoment.isSame(nowMoment) && currentMoment.isSameOrBefore(archiveMoment)) {
     data.push({
       number: 0,
       timestamp: currentMoment.unix(),
@@ -98,7 +98,8 @@ function fillZeroes({ links, creationTime, frequency }) {
   return data
 }
 
-const Chain = ({ title, frequency, links, required, creationTime, heatmap = {} }) => {
+const Chain = ({ title,
+  frequency, links, required, creationTime, archiveTime = null, heatmap = {} }) => {
   const { currentStreakLength, max } =
     calculateLinksInfo({ links, frequency, numRequiredEvents: required })
 
@@ -120,7 +121,11 @@ const Chain = ({ title, frequency, links, required, creationTime, heatmap = {} }
 
   // Fill zeroes for all dates since we started
   // TODO: Add this to cal-heatmap itself instead?
-  const heatmapData = fillZeroes({ links, creationTime, frequency })
+  let archiveMoment = moment()
+  if (archiveTime) {
+    archiveMoment = moment.unix(archiveTime)
+  }
+  const heatmapData = fillZeroes({ links, creationTime, frequency, archiveMoment })
 
   return (
     <div className='chain'>
@@ -147,6 +152,7 @@ Chain.propTypes = {
   frequency: PropTypes.string.isRequired,
   heatmap: PropTypes.object,
   creationTime: PropTypes.number.isRequired,
+  archiveTime: PropTypes.number,
   required: PropTypes.number.isRequired,
   links: PropTypes.array.isRequired
 }

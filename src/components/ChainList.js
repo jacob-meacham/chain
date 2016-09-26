@@ -20,6 +20,7 @@ ChainList.propTypes = {
     links: PropTypes.array.isRequired,
     required: PropTypes.number.isRequired,
     creationTime: PropTypes.number.isRequired,
+    archiveTime: PropTypes.number,
     heatmap: PropTypes.object }).isRequired).isRequired
 }
 
