@@ -76,7 +76,14 @@ function calculateLinksInfo({ links, frequency, numRequiredEvents }) {
   const max = reduce(Object.keys(groupedResults),
     (curMax, key) => (Math.max(curMax, groupedResults[key].length)), 0)
 
-  return { currentStreakLength, max }
+  // TODO: Lots of duplication between this and getStreakLength.
+  const buckets = Object.keys(groupedResults).sort().reverse()
+  const nowMoment = moment().startOf(bucketType)
+
+  // TODO: This may be upset with 0 buckets...
+  const isUpToDate = nowMoment.isSameOrBefore(moment.unix(buckets[0]))
+
+  return { currentStreakLength, max, isUpToDate }
 }
 
 function fillZeroes({ links, creationTime, frequency, archiveMoment = moment() }) {
@@ -114,7 +121,7 @@ function getLegend({ required, max }) {
 
 const Chain = ({ title,
   frequency, links, required, creationTime, archiveTime = null, heatmap = {} }) => {
-  const { currentStreakLength, max } =
+  const { currentStreakLength, max, isUpToDate } =
     calculateLinksInfo({ links, frequency, numRequiredEvents: required })
 
   let domain = null
@@ -144,10 +151,12 @@ const Chain = ({ title,
 
   const legend = getLegend({ required, max })
 
+  const panelHeadingClass = isUpToDate ? 'panel-heading' : 'panel-heading panel-heading-danger'
+
   return (
     <div className='chain'>
       <div className='panel panel-default'>
-        <div className='panel-heading'>
+        <div className={panelHeadingClass}>
           <h3 className='panel-title'>{title}</h3>
         </div>
         <div className='panel-body'>

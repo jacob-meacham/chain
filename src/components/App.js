@@ -1,6 +1,6 @@
 import React from 'react'
-import ChainList from './ChainList'
 import 'bootstrap/dist/css/bootstrap.css'
+import ChainList from './ChainList'
 import './app.scss'
 
 // TODO: Obviously fix this
