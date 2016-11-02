@@ -29,7 +29,17 @@
     fill: #637939;
   }
 
-  .q3 {
+  .q4 {
+    background-color: #637939;
+    fill: #637939;
+  }
+
+  .q5 {
+    background-color: #637939;
+    fill: #637939;
+  }
+
+  .q6 {
     background-color: #637939;
     fill: #637939;
   }
@@ -41,4 +51,8 @@
 
 .panel-default > .panel-heading.panel-heading-danger {
   background-color: #ff5050;
+}
+
+.panel-default > .panel-heading.panel-heading-archived {
+  background-color: #faebcc;
 }

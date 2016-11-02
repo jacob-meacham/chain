@@ -120,7 +120,8 @@ function getLegend({ required, max }) {
 
 
 const Chain = ({ title,
-  frequency, links, required, creationTime, archiveTime = null, heatmap = {} }) => {
+  frequency, links, required,
+  creationTime, archiveTime = null, heatmap = {} }) => {
   const { currentStreakLength, max, isUpToDate } =
     calculateLinksInfo({ links, frequency, numRequiredEvents: required })
 
@@ -142,8 +143,10 @@ const Chain = ({ title,
 
   // Fill zeroes for all dates since we started, and before the archived date
   let archiveMoment = moment()
+  let isArchived = false
   if (archiveTime) {
     archiveMoment = moment.unix(archiveTime)
+    isArchived = true
   }
 
   // TODO: Add this to cal-heatmap itself instead?
@@ -151,7 +154,28 @@ const Chain = ({ title,
 
   const legend = getLegend({ required, max })
 
-  const panelHeadingClass = isUpToDate ? 'panel-heading' : 'panel-heading panel-heading-danger'
+  let panelHeadingClass = 'panel-heading'
+  if (isArchived) {
+    panelHeadingClass += ' panel-heading-archived'
+  } else if (!isUpToDate) {
+    panelHeadingClass += ' panel-heading-danger'
+  }
+
+  let description = null
+  if (isArchived) {
+    description = (
+      <div>
+        This streak was archived on {archiveMoment.toString()}
+      </div>
+    )
+  } else {
+    description = (
+      <div className='streak'>
+        Your current streak is {currentStreakLength} {streakType} long.
+        <span className='dbtc'> Don't break the chain!</span>
+      </div>
+    )
+  }
 
   return (
     <div className='chain'>
@@ -164,10 +188,7 @@ const Chain = ({ title,
             heatmap={{ ...heatmap, ...domain, ...legend }}
             data={heatmapData}
           />
-          <div className='streak'>
-            Your current streak is {currentStreakLength} {streakType} long.
-            <span className='dbtc'> Don't break the chain!</span>
-          </div>
+          {description}
         </div>
       </div>
     </div>)
